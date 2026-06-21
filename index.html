@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WakeBet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="logo">WakeBet</div>
+        <div class="wallet">
+            <span class="wallet-icon">💰</span>
+            <span id="wallet-balance">1000</span> Credits
+        </div>
+    </header>
+
+    <main class="app-container">
+        <!-- View 1: Dashboard -->
+        <section id="dashboard-view" class="view active">
+            <div class="welcome-card card">
+                <h1>Good Afternoon!</h1>
+                <p>Ready to make a commitment for tomorrow morning?</p>
+                
+                <div id="active-commitments-list" class="commitments-list">
+                    <!-- dynamically populated list of commitments -->
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="btn-new-commitment">New Commitment</button>
+                    <button class="btn btn-secondary" id="btn-view-stats">View Statistics</button>
+                    <button class="btn btn-secondary" id="btn-add-credits">Add Credits</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- View 2: Set Commitment -->
+        <section id="commitment-view" class="view">
+            <div class="card">
+                <h2>Set Your Wake-up Goal</h2>
+                <form id="commitment-form">
+                    <div class="form-group">
+                        <label for="wake-time">Wake-up Time</label>
+                        <input type="time" id="wake-time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deposit-amount">Deposit Amount (Credits)</label>
+                        <input type="number" id="deposit-amount" min="10" max="1000" step="10" value="100" required>
+                        <small>Current balance: <span id="max-deposit">1000</span> credits</small>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" id="btn-cancel-commitment">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Commit Deposit</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- View 3: Morning Challenge -->
+        <section id="challenge-view" class="view">
+            <div class="challenge-header">
+                <h2>Morning Challenge</h2>
+                <p>Pass at least 3 out of 5 mini-games to wake up and keep your deposit!</p>
+                <div class="progress-indicator">
+                    <span class="dot" id="dot-1"></span>
+                    <span class="dot" id="dot-2"></span>
+                    <span class="dot" id="dot-3"></span>
+                    <span class="dot" id="dot-4"></span>
+                    <span class="dot" id="dot-5"></span>
+                </div>
+                <div class="challenge-timer-container">
+                    <span id="challenge-timer">60</span>s remaining
+                </div>
+            </div>
+
+            <div class="game-container card">
+                <!-- Game 1: Memory -->
+                <div id="game-memory" class="game-view">
+                    <h3>Game 1: Memory Match</h3>
+                    <p>Find all 4 matching pairs.</p>
+                    <div class="memory-grid" id="memory-grid"></div>
+                </div>
+
+                <!-- Game 2: Math -->
+                <div id="game-math" class="game-view hidden">
+                    <h3>Game 2: Quick Math</h3>
+                    <p>Solve 3 problems correctly.</p>
+                    <div class="math-problem" id="math-problem">5 + 7 = ?</div>
+                    <form id="math-form" class="math-form">
+                        <input type="number" id="math-answer" required autocomplete="off">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    <div id="math-progress">Completed: 0/3</div>
+                </div>
+
+                <!-- Game 3: Reverse Typing -->
+                <div id="game-typing" class="game-view hidden">
+                    <h3>Game 3: Reverse Typing</h3>
+                    <p>Type the word perfectly backwards!</p>
+                    <div class="typing-word" id="typing-word">WAKEUP</div>
+                    <form id="typing-form" class="math-form">
+                        <input type="text" id="typing-answer" required autocomplete="off" style="text-transform: uppercase;">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    <div id="typing-progress">Completed: 0/3</div>
+                </div>
+
+                <!-- Game 4: Odd One Out -->
+                <div id="game-odd" class="game-view hidden">
+                    <h3>Game 4: Odd One Out</h3>
+                    <p>Find the slightly different icon!</p>
+                    <div class="odd-grid" id="odd-grid"></div>
+                    <div id="odd-progress">Completed: 0/4</div>
+                </div>
+
+                <!-- Game 5: Reaction -->
+                <div id="game-reaction" class="game-view hidden">
+                    <h3>Game 5: Reaction Speed</h3>
+                    <p>Click the green target as soon as it appears!</p>
+                    <div class="reaction-area" id="reaction-area">
+                        <button id="reaction-target" class="btn btn-reaction hidden">CLICK ME!</button>
+                    </div>
+                    <div class="reaction-status" id="reaction-status">Waiting...</div>
+                </div>
+                
+                <!-- Results -->
+                <div id="challenge-results" class="game-view hidden">
+                    <h3 id="result-title">Challenge Complete</h3>
+                    <div class="result-details" id="result-details">
+                        <!-- Filled by JS -->
+                    </div>
+                    <button class="btn btn-primary" id="btn-finish-challenge">Return to Dashboard</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- View 4: Statistics -->
+        <section id="stats-view" class="view">
+            <div class="card">
+                <h2>Your Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value" id="stat-total">0</div>
+                        <div class="stat-label">Total Attempts</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value text-success" id="stat-successes">0</div>
+                        <div class="stat-label">Successes</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value text-danger" id="stat-failures">0</div>
+                        <div class="stat-label">Failures</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value text-primary" id="stat-rate">0%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value text-success" id="stat-won">0</div>
+                        <div class="stat-label">Credits Won</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value text-danger" id="stat-lost">0</div>
+                        <div class="stat-label">Credits Lost</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary mt-2" id="btn-back-stats">Back to Dashboard</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
